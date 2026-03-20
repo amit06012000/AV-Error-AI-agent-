@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise AV Support AI Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04080e;--s1:#080f18;--s2:#0e1820;--b1:#152030;--b2:#1e3040;--tx:#d8e8f0;--mu:#3a5868;--dim:#1a2e3a;--bl:#00b4ff;--bld:rgba(0,180,255,0.08);--gr:#00d488;--grd:rgba(0,212,136,0.08);--or:#ff8800;--ord:rgba(255,136,0,0.08);--rd:#ff3355;--yw:#ffcc00;--pu:#9966ff;--cy:#00eeff;--te:#00ccaa;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,180,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,180,255,0.02) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:14px 12px 80px;}
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:12px;padding:16px 0 18px;border-bottom:1px solid var(--b1);margin-bottom:16px;}
+.hico{width:44px;height:44px;background:var(--bld);border:1px solid rgba(0,180,255,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.htx h1{font-size:17px;font-weight:800;color:#fff;}
+.htx h1 span{color:var(--bl);}
+.hsb{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px;letter-spacing:0.8px;}
+.lbdg{margin-left:auto;display:flex;align-items:center;gap:5px;background:rgba(0,212,136,0.1);border:1px solid rgba(0,212,136,0.25);border-radius:20px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gr);}
+.ldot{width:6px;height:6px;background:var(--gr);border-radius:50%;animation:bl 2s infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:0.2;}}
+/* API */
+.abox{background:var(--s1);border:1px solid var(--b1);border-radius:11px;padding:13px;margin-bottom:14px;}
+.blbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--mu);margin-bottom:7px;}
+.arow{display:flex;gap:7px;}
+.ainp{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:9px 12px;color:var(--tx);font-family:'DM Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;}
+.ainp:focus{border-color:var(--bl);}
+.ainp::placeholder{color:var(--mu);}
+.asav{background:var(--bl);color:#000;border:none;border-radius:7px;padding:9px 15px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.asav:hover{background:#33c4ff;}
+.anot{font-size:11px;color:var(--mu);margin-top:5px;font-family:'DM Mono',monospace;}
+.anot a{color:var(--bl);text-decoration:none;}
+/* LANG NOTE */
+.lnot{background:rgba(0,212,136,0.05);border:1px solid rgba(0,212,136,0.18);border-radius:8px;padding:8px 13px;margin-bottom:13px;font-size:11px;color:var(--gr);font-family:'DM Mono',monospace;letter-spacing:0.5px;}
+/* TABS */
+.twrap{overflow-x:auto;margin-bottom:13px;padding-bottom:3px;}
+.tabs{display:flex;gap:5px;width:max-content;}
+.tab{background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--mu);white-space:nowrap;}
+.tab:hover{color:var(--tx);}
+.tav{background:var(--bld)!important;border-color:rgba(0,180,255,0.35)!important;color:var(--bl)!important;}
+.tbi{background:rgba(153,102,255,0.08)!important;border-color:rgba(153,102,255,0.3)!important;color:var(--pu)!important;}
+.tsi{background:rgba(0,238,255,0.07)!important;border-color:rgba(0,238,255,0.25)!important;color:var(--cy)!important;}
+.tne{background:rgba(0,204,170,0.08)!important;border-color:rgba(0,204,170,0.28)!important;color:var(--te)!important;}
+.tdi{background:var(--ord)!important;border-color:rgba(255,136,0,0.3)!important;color:var(--or)!important;}
+.tvc{background:var(--grd)!important;border-color:rgba(0,212,136,0.3)!important;color:var(--gr)!important;}
+.twi{background:rgba(0,120,212,0.1)!important;border-color:rgba(0,120,212,0.28)!important;color:#4da6ff!important;}
+.tma{background:rgba(200,200,200,0.05)!important;border-color:rgba(200,200,200,0.18)!important;color:#aaccdd!important;}
+.tsn{background:rgba(255,204,0,0.07)!important;border-color:rgba(255,204,0,0.28)!important;color:var(--yw)!important;}
+.tdg{background:rgba(255,51,85,0.07)!important;border-color:rgba(255,51,85,0.28)!important;color:var(--rd)!important;}
+/* QUICK */
+.ql{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--mu);margin-bottom:7px;}
+.qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:5px;margin-bottom:13px;}
+.qb{background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:8px 10px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all 0.15s;color:var(--tx);text-align:left;display:flex;align-items:center;gap:6px;}
+.qb:hover{background:var(--s2);border-color:var(--bl);color:var(--bl);}
+/* CHAT */
+.cbox{background:var(--s1);border:1px solid var(--b1);border-radius:13px;min-height:400px;max-height:500px;overflow-y:auto;padding:13px;margin-bottom:13px;display:flex;flex-direction:column;gap:11px;scroll-behavior:smooth;}
+.cbox::-webkit-scrollbar{width:3px;}
+.cbox::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px;}
+.msg{display:flex;gap:8px;animation:mi 0.3s ease both;}
+@keyframes mi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.msg.usr{flex-direction:row-reverse;}
+.mav{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;}
+.msg.ai .mav{background:var(--bld);border:1px solid rgba(0,180,255,0.2);}
+.msg.usr .mav{background:var(--ord);border:1px solid rgba(255,136,0,0.2);}
+.mbub{max-width:85%;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.65;}
+.msg.ai .mbub{background:var(--s2);border:1px solid var(--b2);}
+.msg.usr .mbub{background:rgba(255,136,0,0.07);border:1px solid rgba(255,136,0,0.16);}
+/* TICKET */
+.tkt{background:rgba(255,204,0,0.04);border:1px solid rgba(255,204,0,0.18);border-radius:9px;padding:12px;margin-top:9px;}
+.tkth{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--yw);margin-bottom:9px;}
+.tktr{display:flex;gap:7px;margin-bottom:6px;font-size:12px;}
+.tktk{color:var(--mu);min-width:100px;font-family:'DM Mono',monospace;font-size:10px;flex-shrink:0;padding-top:1px;}
+.tktv{color:var(--tx);font-weight:500;line-height:1.5;}
+.tktc{width:100%;background:rgba(255,204,0,0.07);border:1px solid rgba(255,204,0,0.22);color:var(--yw);border-radius:6px;padding:6px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;margin-top:7px;transition:all 0.2s;letter-spacing:1px;}
+.tktc:hover{background:rgba(255,204,0,0.16);}
+.tktc.cp{background:rgba(0,212,136,0.1);border-color:rgba(0,212,136,0.28);color:var(--gr);}
+/* DIAGRAM */
+.dgwrap{background:rgba(8,15,24,0.95);border:1px solid rgba(0,180,255,0.18);border-radius:9px;padding:13px;margin-top:9px;overflow-x:auto;}
+.dgh{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--bl);margin-bottom:10px;}
+.dgwrap svg{max-width:100%;height:auto;display:block;}
+.dgc{margin-top:9px;background:rgba(0,180,255,0.07);border:1px solid rgba(0,180,255,0.22);color:var(--bl);border-radius:6px;padding:6px 13px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;transition:all 0.2s;letter-spacing:1px;}
+.dgc:hover{background:rgba(0,180,255,0.16);color:#fff;}
+/* TYPING */
+.typ{display:flex;gap:4px;align-items:center;padding:5px 2px;}
+.typ span{width:5px;height:5px;background:var(--bl);border-radius:50%;animation:bo 1.2s infinite;}
+.typ span:nth-child(2){animation-delay:.2s;}
+.typ span:nth-child(3){animation-delay:.4s;}
+@keyframes bo{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
+/* INPUT */
+.irow{display:flex;gap:7px;}
+.minp{flex:1;background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:10px 14px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;resize:none;min-height:44px;max-height:100px;}
+.minp:focus{border-color:var(--bl);}
+.minp::placeholder{color:var(--mu);}
+.sbtn{background:var(--bl);color:#000;border:none;border-radius:10px;padding:10px 17px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.sbtn:hover{background:#33c4ff;transform:translateY(-1px);}
+.sbtn:disabled{background:var(--dim);color:var(--mu);cursor:not-allowed;transform:none;}
+/* WELCOME */
+.wel{text-align:center;padding:26px 14px;}
+.welico{font-size:34px;margin-bottom:9px;}
+.wel h3{font-size:14px;color:var(--tx);margin-bottom:10px;}
+.wg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-width:540px;margin:0 auto;}
+@media(max-width:480px){.wg{grid-template-columns:repeat(2,1fr);}}
+.wi{background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:7px 9px;font-size:11px;color:var(--mu);display:flex;align-items:center;gap:5px;}
+/* BADGE */
+.bdg{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:20px;font-weight:700;letter-spacing:1px;margin-left:5px;}
+.bh{background:rgba(255,51,85,0.14);color:var(--rd);border:1px solid rgba(255,51,85,0.28);}
+.bm{background:rgba(255,136,0,0.14);color:var(--or);border:1px solid rgba(255,136,0,0.28);}
+.bl2{background:rgba(0,212,136,0.1);color:var(--gr);border:1px solid rgba(0,212,136,0.2);}
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--gr);color:var(--gr);font-family:'DM Mono',monospace;font-size:11px;padding:8px 18px;border-radius:9px;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast">✓</div>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="hico">🏢</div>
+  <div class="htx">
+    <h1>Enterprise <span>AV Support</span> AI Agent</h1>
+    <div class="hsb">BIAMP · DANTE · BRIGHTSIGN · SHURE · LIGHTWARE · RARITAN · CRESTRON · ALL BRANDS · DIAGRAMS</div>
+  </div>
+  <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+    <div class="lbdg"><div class="ldot"></div>LIVE</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px;">Built by <span style="color:var(--bl);font-weight:700;">AMIT RANA</span></div>
+  </div>
+</div>
+
+<div class="abox">
+  <div class="blbl">CLAUDE API KEY</div>
+  <div class="arow">
+    <input type="password" class="ainp" id="akey" placeholder="sk-ant-api03-..."/>
+    <button class="asav" onclick="saveKey()">Save ✓</button>
+  </div>
+  <div class="anot">Free key: <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key</div>
+</div>
+
+<div class="lnot">🌐 Auto Language Detection — English → English reply | Hindi → Hindi reply | Hinglish → Hinglish reply | Any language → Same language</div>
+
+<div class="twrap">
+  <div class="tabs" id="tabs">
+    <div class="tab tav" onclick="st('av',this)">📺 AV General</div>
+    <div class="tab" onclick="st('bi',this)">🎛️ Biamp Tesira</div>
+    <div class="tab" onclick="st('si',this)">📡 Signal/EDID/Dante</div>
+    <div class="tab" onclick="st('ne',this)">🌐 Network/PDU</div>
+    <div class="tab" onclick="st('dp',this)">🖥️ Display/Signage</div>
+    <div class="tab" onclick="st('vc',this)">📹 VC Platforms</div>
+    <div class="tab" onclick="st('wi',this)">🪟 Windows IT</div>
+    <div class="tab" onclick="st('ma',this)">🍎 macOS IT</div>
+    <div class="tab" onclick="st('sn',this)">🎫 ServiceNow</div>
+    <div class="tab" onclick="st('dg',this)">📐 AV Diagram</div>
+  </div>
+</div>
+
+<div class="ql" id="ql">QUICK PROBLEMS — ONE CLICK</div>
+<div class="qg" id="qg"></div>
+
+<div class="cbox" id="cbox">
+  <div class="wel">
+    <div class="welico">🏢</div>
+    <h3>Enterprise AV Support — All Brands, All Problems, Any Language</h3>
+    <!-- AMIT BRANDING -->
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(0,180,255,0.07);border:1px solid rgba(0,180,255,0.2);border-radius:20px;padding:7px 16px;margin:10px auto 14px;font-family:'DM Mono',monospace;font-size:11px;">
+      <span style="font-size:16px;">👨‍💻</span>
+      <span style="color:var(--mu);">Designed & Built by</span>
+      <span style="color:var(--bl);font-weight:700;font-size:13px;letter-spacing:1px;">AMIT RANA</span>
+      <span style="color:var(--mu);">·</span>
+      <span style="color:var(--mu);">AV Support Engineer</span>
+    </div>
+    <div class="wg">
+      <div class="wi">🎛️ Biamp Tesira DSP</div><div class="wi">📡 Dante / AV over IP</div>
+      <div class="wi">💡 BrightSign Signage</div><div class="wi">🎤 Shure Ceiling Mic</div>
+      <div class="wi">🔌 Lightware / NVX</div><div class="wi">⚡ Raritan PDU</div>
+      <div class="wi">🖥️ EDID Solutions</div><div class="wi">🎥 All Brand Cameras</div>
+      <div class="wi">📹 Zoom/Teams/Webex</div><div class="wi">🎫 ServiceNow Auto</div>
+      <div class="wi">📐 SVG AV Diagrams</div><div class="wi">🌐 Any Language</div>
+    </div>
+  </div>
+</div>
+
+<div class="irow">
+  <textarea class="minp" id="minp" placeholder="Ask in any language — AV problem, IT issue, or request a diagram..." rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+  <button class="sbtn" id="sbtn" onclick="send()">Send ➤</button>
+</div>
+
+<!-- AMIT FOOTER -->
+<div style="text-align:center;margin-top:18px;padding:14px 0 6px;border-top:1px solid var(--b1);">
+  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,180,255,0.06);border:1px solid rgba(0,180,255,0.15);border-radius:20px;padding:8px 18px;">
+    <span style="font-size:18px;">👨‍💻</span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);">Built by</span>
+    <span style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--bl);letter-spacing:1px;">AMIT RANA</span>
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);">· AV Support Engineer, Bengaluru</span>
+  </div>
+  <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);margin-top:8px;letter-spacing:1px;">
+    ENTERPRISE AV SUPPORT AGENT v1.0 · POWERED BY CLAUDE AI
+  </div>
+</div>
+
+</div>
+
+<script>
+const QD={
+  av:[{i:'📺',t:'Display blank / no signal'},{i:'🔊',t:'Audio not working in speakers'},{i:'🎤',t:'Mic feedback / echo issue'},{i:'🔌',t:'HDMI not connecting'},{i:'🖥️',t:'Crestron CP4N / CP3 panel frozen'},{i:'📡',t:'Wireless presentation failing'},{i:'🔇',t:'Audio delay / sync problem'},{i:'⚡',t:'Room AV system not booting'}],
+  bi:[{i:'🔇',t:'Biamp Tesira no audio'},{i:'📢',t:'Uneven audio levels in room'},{i:'🔊',t:'Howling / feedback from speakers'},{i:'🎤',t:'Shure MXA ceiling mic gain issue'},{i:'🌐',t:'Tesira not found on network'},{i:'⚙️',t:'Tesira DSP config lost / reset'},{i:'📡',t:'Dante audio subscription failed'},{i:'🔔',t:'AEC not working — echo on calls'}],
+  si:[{i:'🖥️',t:'EDID mismatch — wrong resolution'},{i:'📡',t:'Dante audio packet loss / dropout'},{i:'🔄',t:'AV over IP stream not appearing'},{i:'🔌',t:'Lightware matrix switching issue'},{i:'📺',t:'NVX encoder/decoder sync issue'},{i:'🎛️',t:'Dante Controller — device missing'},{i:'⚡',t:'Signal chain break — trace path'},{i:'🔊',t:'AoIP high latency issue'}],
+  ne:[{i:'🌐',t:'AV VLAN configuration issue'},{i:'⚡',t:'Raritan PDU — remote power cycle'},{i:'🔌',t:'Switch PoE not powering device'},{i:'📡',t:'Dante multicast flooding network'},{i:'🔒',t:'QoS settings for AV/Dante traffic'},{i:'💻',t:'AV device IP address conflict'},{i:'📊',t:'AV network bandwidth calculation'},{i:'🛡️',t:'Firewall rules for Zoom / Teams'}],
+  dp:[{i:'📽️',t:'Projector lamp / laser issue'},{i:'🖥️',t:'Touch panel not responding'},{i:'📺',t:'BrightSign player not working'},{i:'🖼️',t:'Digital signage content not playing'},{i:'🔄',t:'Display EDID / handshake failing'},{i:'🎨',t:'Projector color calibration needed'},{i:'📏',t:'Wrong aspect ratio on display'},{i:'💡',t:'LED video wall panel issue'}],
+  vc:[{i:'📹',t:'Zoom Room setup / pairing issue'},{i:'💼',t:'Microsoft Teams Room problem'},{i:'🌐',t:'Cisco Webex Board connectivity'},{i:'🎥',t:'PTZ camera controller issue'},{i:'🔊',t:'VC audio echo / noise problem'},{i:'📡',t:'Codec SIP dial out failing'},{i:'🔗',t:'H.323 / SIP registration issue'},{i:'📊',t:'Video quality / low bandwidth'}],
+  wi:[{i:'🐌',t:'PC very slow / high CPU'},{i:'🔵',t:'Blue screen of death (BSOD)'},{i:'🌐',t:'Network not connecting'},{i:'🖨️',t:'Printer not detected'},{i:'🔑',t:'Windows login / AD issue'},{i:'💾',t:'Disk full / low storage'},{i:'🔄',t:'Windows update stuck'},{i:'🦠',t:'Malware / virus suspected'}],
+  ma:[{i:'🌀',t:'Mac spinning beachball'},{i:'📶',t:'WiFi keeps disconnecting'},{i:'🔋',t:'Battery draining too fast'},{i:'🖥️',t:'External monitor not detected'},{i:'🔊',t:'macOS audio not working'},{i:'📱',t:'AirDrop not working'},{i:'🔒',t:'Mac locked / forgot password'},{i:'💿',t:'Storage almost full'}],
+  sn:[{i:'🎛️',t:'Biamp Tesira audio issue ticket'},{i:'📺',t:'Complete AV room failure — P1'},{i:'📡',t:'Dante / AV over IP issue ticket'},{i:'📹',t:'Video conferencing issue ticket'},{i:'🌐',t:'AV network / VLAN issue ticket'},{i:'⚡',t:'PDU / power issue ticket'},{i:'🖥️',t:'Display / projector issue ticket'},{i:'🚨',t:'Critical — multiple users affected'}],
+  dg:[{i:'🏢',t:'Conference room full AV diagram'},{i:'📡',t:'Dante network topology diagram'},{i:'🎛️',t:'Biamp Tesira signal flow diagram'},{i:'📹',t:'Zoom Room AV setup diagram'},{i:'🔌',t:'NVX over IP diagram'},{i:'🌐',t:'AV over IP network topology'},{i:'🖥️',t:'Multi-display EDID chain diagram'},{i:'🎤',t:'Ceiling mic array layout diagram'}]
+};
+
+const TCLASS={av:'tav',bi:'tbi',si:'tsi',ne:'tne',dp:'tdi',vc:'tvc',wi:'twi',ma:'tma',sn:'tsn',dg:'tdg'};
+const TLBL={av:'AV GENERAL PROBLEMS',bi:'BIAMP TESIRA PROBLEMS',si:'SIGNAL / EDID / DANTE ISSUES',ne:'NETWORK / PDU / SWITCH',dp:'DISPLAY / PROJECTOR / SIGNAGE',vc:'VIDEO CONFERENCING PLATFORMS',wi:'WINDOWS IT PROBLEMS',ma:'MACOS IT PROBLEMS',sn:'SERVICENOW TICKET TYPES',dg:'AV DIAGRAM REQUESTS'};
+
+// ── SYSTEM PROMPTS ────────────────────────────────────────
+const LANG = `CRITICAL: Detect user's language automatically and ALWAYS reply in the SAME language they used. English question = English answer. Hindi question = Hindi answer. Hinglish = Hinglish. Never mix unless user does.`;
+
+const BASE = `You are a Senior Enterprise AV & IT Support Engineer with 15+ years experience. You know:
+CONTROL SYSTEMS: Crestron (CP4N, CP3, MC4, NVX, TSW touch panels, DM switching, DigitalMedia), AMX (NX controllers, Modero panels), Extron (DTP, XTP, SMP recorders)
+AUDIO DSP: Biamp Tesira (FORTE AI/Dan/VT4, SERVER, CONNECT, XANE), Q-SYS Core, BSS Audio Soundweb, ClearOne, Yamaha MTX/MRX, Crown DCi amplifiers
+MICROPHONES: Shure (MXA910, MXA920, MXA710, QLXD, ULXD, SM series), Sennheiser (TeamConnect Ceiling, evolution wireless), Audio-Technica, Beyerdynamic
+CAMERAS: Sony (SRG, BRC series), Panasonic (AW-HE series), Canon PTZ, PTZOptics, Huddly, Logitech (Rally, MeetUp), Vaddio, Lumens — VISCA/IP control
+VIDEO DISTRIBUTION: Lightware (UMX, MX2, HDMI-TPS), Kramer (VS, VM series), Extron XTP, Just Add Power, ZeeVee, Haivision AV over IP encoders/decoders
+NVX / AV over IP: Crestron NVX-350, NVX-360, NVX-D80 — setup, streaming, IGMP
+DISPLAY: Epson, Panasonic, Sony, Christie, Barco, NEC projectors; Samsung (MagicInfo), LG (webOS), NEC display walls; BrightSign (XD/HD/LS/4K series, BrightAuthor:connected)
+VC PLATFORMS: Zoom Rooms (ZRC, Zoom Room Appliance), Microsoft Teams Rooms (MTR on Windows & Android), Cisco Webex (Board, Room Kit, Desk Pro, xAPI), Poly (Studio, Eagle Eye, Trio), Logitech Rally Bar, Yealink
+CODECS: Cisco (SX/MX/DX), Poly RealPresence, Lifesize — SIP/H.323, dial plan, firewall traversal
+NETWORKING: Cisco/Extreme/Aruba switches for AV — VLAN, QoS/DSCP, IGMP snooping, PoE+, jumbo frames, spanning tree
+PDU: Raritan Dominion PX2/PX3 — remote outlet control, monitoring, SNMP; APC, Vertiv
+DANTE / AV over IP: Dante Controller, Dante Via, unicast/multicast, QoS, IGMP, AES67, AVB
+EDID: Handshake issues, HDCP, EDID emulators, Ghost adapters, Lightware/Kramer/Extron EDID management
+SIGNAL: HDMI 2.0/2.1, DisplayPort 1.4, HDBaseT, USB-C/Thunderbolt, balanced/unbalanced audio, fiber
+CABLE/INFRASTRUCTURE: Dante, Shure, Biamp, all cabling standards`;
+
+const SPS = {
+  av: LANG + "\n" + BASE + `\nFocus on general AV troubleshooting. Response format:\n🔍 Problem Analysis (2-3 root causes)\n⚡ Quick Fix (try this first)\n🛠️ Step-by-Step Solution (numbered)\n🔧 Tools Needed\n🚨 Escalate If (when to escalate)\n🎫 ServiceNow Ticket JSON if needed: {"ticket":true,"title":"...","category":"AV","priority":"P1/P2/P3/P4","severity":"Critical/High/Medium/Low","description":"...","steps_taken":"...","affected_equipment":"...","assignment_group":"AV Support","impact":"...","workaround":"..."}`,
+
+  bi: LANG + "\n" + BASE + `\nFocus on Biamp Tesira DSP. Deep knowledge: TesiraFORTE AI/Dan/VT4/X, Tesira SERVER/CONNECT/XANE, Tesira software signal flow, AEC tuning, Dante in Tesira, VoIP/SIP, GPIO, Shure MXA integration, gain structure, noise gate/compression/EQ/limiting, firmware updates, common errors (Device Not Found, Sync Error, Dante Subscription Failed). Response format:\n🎛️ Biamp Diagnosis\n📊 Signal Flow Check (input→processing→output)\n🔧 Tesira Software Steps (exact menu paths)\n⚙️ Recommended Settings (values)\n🔊 Audio Verification\n🎫 Ticket JSON if needed: {"ticket":true,"title":"...","category":"AV - Biamp Tesira DSP","priority":"...","severity":"...","description":"...","steps_taken":"...","affected_equipment":"Biamp Tesira [model]","assignment_group":"AV Support","dante_info":"...","aec_settings":"..."}`,
+
+  si: LANG + "\n" + BASE + `\nFocus on signal flow, EDID, Dante, AV over IP. Deep knowledge: EDID mismatch diagnosis & fix, HDCP issues, EDID emulators, Lightware/Extron/Kramer EDID management; Dante Controller routing, subscriptions, latency, clock source, multicast vs unicast, QoS settings (DSCP EF for Dante), IGMP snooping; NVX setup, Just Add Power, ZeeVee configuration; Lightware Device Controller software; signal chain tracing methodology. Response format:\n📡 Signal Path (source→switch→destination)\n🔍 EDID/Dante Root Cause\n⚙️ Configuration Steps (exact)\n🌐 Network Requirements\n✅ Verification\n🎫 Ticket JSON if needed.`,
+
+  ne: LANG + "\n" + BASE + `\nFocus on AV networking. Deep knowledge: VLAN setup for AV (dedicated AV VLAN best practice), QoS/DSCP marking (EF=46 for Dante, AF41 for video), IGMP snooping querier config, PoE+ budget calculation, STP/RSTP issues with multicast, jumbo frames (9000 MTU for NVX), Raritan PDU (PX2/PX3 web UI, CLI, outlet control, SNMP), firewall ports (Zoom: 8801-8802 TCP/UDP, 443; Teams: 3478-3481 UDP; Dante: UDP 4455, 14336-14591, 8700-8900), IP addressing for AV VLAN. Response format:\n🌐 Network Analysis\n⚙️ Switch/PDU Config (CLI commands where applicable)\n🔒 Security Note\n📊 Bandwidth/PoE Calculation\n🎫 Ticket JSON if needed.`,
+
+  dp: LANG + "\n" + BASE + `\nFocus on displays, projectors, digital signage. Deep knowledge: Epson/Panasonic/Sony/Christie/Barco/NEC projector lamp/laser/color/IP control; Crestron TSW/AMX Modero/Extron TouchLink panel troubleshooting; BrightSign (XD/HD/LS/4K) — BrightAuthor:connected, network config, content issues, OS update/recovery, common errors; Samsung MagicInfo, LG webOS signage CMS; LED wall (Absen, Unilumin) controller issues; EDID with displays specifically; video wall controllers. Response format:\n🖥️ Display Diagnosis\n🔧 Fix Procedure (step-by-step)\n📺 Content/Signal Verification\n🎫 Ticket JSON if needed.`,
+
+  vc: LANG + "\n" + BASE + `\nFocus on video conferencing. Deep knowledge: Zoom Rooms (ZRC setup, admin portal, hardware partners — Logitech, Poly, Yealink, Crestron Flex, Neat); MTR on Windows (Crestron Flex, Lenovo Hub) and Android (Logitech, Poly, Yealink); Cisco Webex (Control Hub, xAPI commands, Board/Room Kit/Desk Pro); Poly (Studio X, Eagle Eye, Trio, RealPresence); camera controller protocols (VISCA over IP/serial, PELCO-D, ONVIF); codec registration (SIP, H.323, ICE/TURN/STUN for firewall traversal); dial plan; content sharing issues (HDMI, USB, wireless). Response format:\n📹 VC Platform Diagnosis\n🔧 Platform-Specific Fix (exact menu paths)\n🌐 Network/Firewall Check\n📊 Quality Optimization\n🎫 Ticket JSON if needed: {"ticket":true,"title":"...","category":"Video Conferencing","priority":"...","severity":"...","platform":"Zoom/Teams/Webex/Poly","description":"...","steps_taken":"...","affected_equipment":"...","assignment_group":"AV Support"}`,
+
+  wi: LANG + "\n" + `You are a Windows IT Support expert. ${BASE}\nFocus: Windows 10/11 enterprise — performance (Task Manager, Resource Monitor, clean boot), BSOD (minidump analysis, common stop codes), networking (ipconfig, netsh, DNS flush, VPN), Active Directory/Group Policy, printer (spooler, drivers), Windows Update (DISM, SFC /scannow), security (Defender, malware removal), driver conflicts, disk (chkdsk, DiskPart). Response format:\n🔍 Root Cause\n🛠️ Fix Steps\n💻 CMD/PowerShell Commands\n🎫 Ticket JSON if needed: {"ticket":true,"title":"...","category":"Windows IT","priority":"...","severity":"...","description":"...","steps_taken":"...","affected_device":"...","assignment_group":"IT Support"}`,
+
+  ma: LANG + "\n" + `You are a macOS IT Support expert. ${BASE}\nFocus: macOS Ventura/Sonoma/Monterey/Sequoia — Activity Monitor, spinning beachball (memory pressure, runaway processes), WiFi (DHCP renew, DNS, network diagnostics), battery (Battery Health, Activity Monitor drain culprit), external displays (arrangement, HDMI adapters, EDID), AirDrop (Bluetooth+WiFi, firewall), FileVault, Time Machine, iCloud sync, storage (Optimize Storage, OmniDiskSweeper), Terminal commands (sudo, diskutil, pmset, networksetup). Response format:\n🍎 macOS Diagnosis\n🔧 Fix Steps (exact System Settings paths)\n⌨️ Terminal Commands\n🎫 Ticket JSON if needed: {"ticket":true,"title":"...","category":"macOS IT","priority":"...","severity":"...","description":"...","steps_taken":"...","affected_device":"...","assignment_group":"IT Support"}`,
+
+  sn: LANG + "\n" + `You are a ServiceNow ITSM expert specializing in AV and IT tickets. Priority: P1=complete failure/C-suite impacted/10+ users; P2=major issue/no workaround/5+ users; P3=partial/workaround available/<5 users; P4=minor/1 user. ALWAYS generate complete JSON: {"ticket":true,"title":"[Equipment] - [Issue Summary] - [Location]","category":"AV Support/IT Support/Network","priority":"P1/P2/P3/P4","severity":"Critical/High/Medium/Low","short_description":"...","description":"...","impact":"...","urgency":"...","affected_users":"N users","location":"[Room/Building]","assignment_group":"AV Support/IT Support","steps_taken":"...","business_impact":"...","workaround":"N/A or description","affected_equipment":"...","configuration_item":"..."} Plus clear explanation of how to fill in ServiceNow.`,
+
+  dg: LANG + "\n" + BASE + `\nGenerate professional SVG AV system diagrams. ALWAYS create a complete, valid SVG when diagram is requested.
+SVG specs: width="750" height="450" (adjust height as needed), dark background #060e18.
+Color coding for boxes (use rect with rounded corners rx="6"):
+- Control systems (Crestron/AMX): fill="#1a1060" stroke="#6644ff"
+- Audio DSP (Biamp/QSC): fill="#0d3020" stroke="#00cc66"  
+- Microphones: fill="#0d2030" stroke="#0099cc"
+- Cameras: fill="#1a1a0d" stroke="#ccaa00"
+- Displays/Projectors: fill="#1a0d0d" stroke="#cc4400"
+- VC Platforms (Zoom/Teams): fill="#0d1a30" stroke="#0066ff"
+- Network (Switch/Router): fill="#1a0d30" stroke="#9900cc"
+- PDU/Power: fill="#200808" stroke="#cc0000"
+- Signal processors: fill="#101820" stroke="#00aaff"
+- PC/Sources: fill="#101010" stroke="#aaaaaa"
+Arrows: use line or path with marker-end arrowheads, stroke="#556677"
+Labels: fill="#ccddee" font-family="monospace" font-size="11"
+Connection labels: fill="#778899" font-size="9"
+Always include: title, legend, signal flow direction, connection type labels (HDMI, Dante, IP, RS-232, USB, etc.)
+After SVG, provide: 📝 Component List, 🔌 Cable Guide, 💡 Setup Tips`
+};
+
+let curT='av', apiKey=localStorage.getItem('entav2')||'', hist=[];
+if(apiKey) document.getElementById('akey').value=apiKey;
+renderQ('av');
+
+function saveKey(){
+  const k=document.getElementById('akey').value.trim();
+  if(k){apiKey=k;localStorage.setItem('entav2',k);showT('✓ API Key saved!');}
+  else showT('⚠️ Enter API key first!');
+}
+
+function st(tab,el){
+  curT=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
+  el.className='tab '+TCLASS[tab];
+  renderQ(tab);
+  document.getElementById('ql').textContent=TLBL[tab]+' — ONE CLICK';
+}
+
+function renderQ(tab){
+  const g=document.getElementById('qg');g.innerHTML='';
+  (QD[tab]||[]).forEach(q=>{
+    const b=document.createElement('button');b.className='qb';
+    b.innerHTML=`<span style="font-size:14px;flex-shrink:0">${q.i}</span>${q.t}`;
+    b.onclick=()=>{document.getElementById('minp').value=q.t;send();};
+    g.appendChild(b);
+  });
+}
+
+async function send(){
+  const inp=document.getElementById('minp');
+  const msg=inp.value.trim();if(!msg)return;
+  if(!apiKey){showT('⚠️ Add API Key first!');return;}
+  inp.value='';ar(inp);
+  addM('usr',msg);
+  hist.push({role:'user',content:msg});
+  const te=addTyping();
+  document.getElementById('sbtn').disabled=true;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SPS[curT],messages:hist})
+    });
+    const d=await r.json();te.remove();
+    if(d.error){addM('ai','⚠️ Error: '+d.error.message);hist.pop();}
+    else{
+      const rep=d.content[0].text;
+      hist.push({role:'assistant',content:rep});
+      // extract ticket
+      let tkt=null,svg=null,clean=rep;
+      const tm=rep.match(/\{[^{}]{0,50}"ticket"\s*:\s*true[\s\S]{0,2000}?\}/);
+      if(tm){try{tkt=JSON.parse(tm[0]);clean=clean.replace(tm[0],'').trim();}catch(e){}}
+      // extract SVG
+      const sm=rep.match(/<svg[\s\S]*?<\/svg>/i);
+      if(sm){svg=sm[0];clean=clean.replace(sm[0],'').trim();}
+      addM('ai',clean,tkt,svg);
+    }
+  }catch(e){te.remove();addM('ai','⚠️ Network error! Check internet.');hist.pop();}
+  document.getElementById('sbtn').disabled=false;
+  scrollB();
+}
+
+function addM(role,text,tkt=null,svg=null){
+  const box=document.getElementById('cbox');
+  const w=box.querySelector('.wel');if(w)w.remove();
+  const div=document.createElement('div');div.className='msg '+(role==='ai'?'ai':'usr');
+  let ex='';
+  if(svg){
+    const enc=encodeURIComponent(svg);
+    ex+=`<div class="dgwrap"><div class="dgh">📐 AV SYSTEM DIAGRAM</div>${svg}<button class="dgc" onclick="copySVG(this,'${enc}')">📋 Copy SVG Code</button></div>`;
+  }
+  if(tkt){
+    const sev=tkt.priority||tkt.severity||'';
+    const sc=sev.match(/P1|Critical/i)?'bh':sev.match(/P2|High/i)?'bm':'bl2';
+    const ts=JSON.stringify(tkt,null,2);
+    const rows=[['TITLE',tkt.title],['CATEGORY',tkt.category],['PRIORITY',tkt.priority||tkt.severity],['DESCRIPTION',tkt.description],['ASSIGN TO',tkt.assignment_group],['EQUIPMENT',tkt.affected_equipment],['STEPS TAKEN',tkt.steps_taken],['IMPACT',tkt.business_impact||tkt.impact],['WORKAROUND',tkt.workaround]].filter(r=>r[1]&&r[1]!=='undefined');
+    ex+=`<div class="tkt"><div class="tkth">🎫 SERVICENOW TICKET <span class="bdg ${sc}">${sev}</span></div>${rows.map(r=>`<div class="tktr"><div class="tktk">${r[0]}</div><div class="tktv">${r[1]}</div></div>`).join('')}<button class="tktc" onclick="cpTkt(this,'${encodeURIComponent(ts)}')">📋 Copy Ticket — Paste in ServiceNow</button></div>`;
+  }
+  div.innerHTML=`<div class="mav">${role==='ai'?'🤖':'👤'}</div><div class="mbub">${fmt(text)}${ex}</div>`;
+  box.appendChild(div);scrollB();return div;
+}
+
+function addTyping(){
+  const box=document.getElementById('cbox');
+  const d=document.createElement('div');d.className='msg ai';
+  d.innerHTML=`<div class="mav">🤖</div><div class="mbub"><div class="typ"><span></span><span></span><span></span></div></div>`;
+  box.appendChild(d);scrollB();return d;
+}
+
+function fmt(t){
+  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/`([^`]+)`/g,'<code style="background:rgba(0,180,255,0.1);padding:1px 5px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
+function cpTkt(btn,enc){
+  const t=decodeURIComponent(enc);
+  navigator.clipboard.writeText(t).then(()=>{btn.textContent='✓ Copied! Paste in ServiceNow';btn.classList.add('cp');setTimeout(()=>{btn.textContent='📋 Copy Ticket — Paste in ServiceNow';btn.classList.remove('cp');},3000);}).catch(()=>{fb(t);showT('✓ Ticket copied!');});
+}
+
+function copySVG(btn,enc){
+  const t=decodeURIComponent(enc);
+  navigator.clipboard.writeText(t).then(()=>{btn.textContent='✓ SVG Copied!';setTimeout(()=>{btn.textContent='📋 Copy SVG Code';},2500);}).catch(()=>{fb(t);showT('✓ SVG copied!');});
+}
+
+function fb(t){const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+function scrollB(){const b=document.getElementById('cbox');b.scrollTop=b.scrollHeight;}
+function showT(m){const t=document.getElementById('toast');t.textContent=m||'✓';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
